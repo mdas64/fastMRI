@@ -2,6 +2,12 @@
 
 ## Clone the Repo and Install Dependencies
 
+Clone the repo.
+
+```bash
+git clone https://github.com/mdas64/fastMRI.git
+```
+
 Run the following commands:
 
 ```bash
