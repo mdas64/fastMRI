@@ -7,6 +7,7 @@ LICENSE file in the root directory of this source tree.
 
 import os
 import pathlib
+import torch
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
@@ -42,7 +43,8 @@ def cli_main(args):
         test_path=args.test_path,
         sample_rate=args.sample_rate,
         batch_size=args.batch_size,
-        num_workers=args.num_workers,
+        # num_workers=args.num_workers,
+        num_workers=0,
         distributed_sampler=(args.accelerator in ("ddp", "ddp_cpu")),
     )
 
@@ -140,16 +142,40 @@ def build_args():
         weight_decay=0.0,  # weight decay regularization strength
     )
 
+    # # trainer config
+    # parser = pl.Trainer.add_argparse_args(parser)
+    # parser.set_defaults(
+    #     gpus=num_gpus,  # number of gpus to use
+    #     replace_sampler_ddp=False,  # this is necessary for volume dispatch during val
+    #     strategy=backend,  # what distributed version to use
+    #     seed=42,  # random seed
+    #     deterministic=True,  # makes things slower, but deterministic
+    #     default_root_dir=default_root_dir,  # directory for logs and checkpoints
+    #     max_epochs=50,  # max number of epochs
+    # )
+
+    # Detect available accelerators
+    if torch.cuda.is_available():
+        accelerator = "gpu"
+        num_gpus = torch.cuda.device_count()
+    elif torch.backends.mps.is_available():
+        accelerator = "mps"
+        num_gpus = 1  # MPS uses the single Apple GPU
+    else:
+        accelerator = "cpu"
+        num_gpus = 0
+
     # trainer config
     parser = pl.Trainer.add_argparse_args(parser)
     parser.set_defaults(
-        gpus=num_gpus,  # number of gpus to use
-        replace_sampler_ddp=False,  # this is necessary for volume dispatch during val
-        strategy=backend,  # what distributed version to use
-        seed=42,  # random seed
-        deterministic=True,  # makes things slower, but deterministic
-        default_root_dir=default_root_dir,  # directory for logs and checkpoints
-        max_epochs=50,  # max number of epochs
+        accelerator=accelerator,  # automatically set accelerator
+        devices=num_gpus if num_gpus > 0 else 1,  # use correct number of devices
+        replace_sampler_ddp=False,  # necessary for volume dispatch during val
+        strategy=backend if num_gpus > 1 else "auto",
+        seed=42,
+        deterministic=True,
+        default_root_dir=default_root_dir,
+        max_epochs=50,
     )
 
     args = parser.parse_args()
