@@ -67,7 +67,7 @@ Exit jupyter notebook.
 Run the following command to begin the training process. Remember to replace '/path/to/repo' with the absolute path to your fastMRI repo.
 
 ```bash
-python3 fastmri_examples/unet/train_unet_demo.py --challenge singlecoil --data_path /path/to/repo/fastMRI/singlecoil_train --mask_type random
+python3 fastmri_examples/unet/train_unet_demo.py --challenge singlecoil --data_path /path/to/repo/fastMRI --mask_type random
 ```
 
 I configured the training process to work on my personal setup. You might need to modify the file fastmri_examples/unet/train_unet_demo.py to work with your own setup if this command isn't working for you. Text me if you can't figure it out. 
