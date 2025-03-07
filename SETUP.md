@@ -36,9 +36,9 @@ Move these .tar files into the fastMRI directory (the top level directory in the
 Run the following commands:
 
 ```bash
-tar -xvf knee_singlecoil_test.tar
-tar -xvf knee_singlecoil_val.tar
-tar -xvf knee_singlecoil_train.tar
+tar -xvf knee_singlecoil_test.tar.xz
+tar -xvf knee_singlecoil_val.tar.xz
+tar -xvf knee_singlecoil_train.tar.xz
 ```
 
 Not sure how long this step took since I ran the last command overnight. 
