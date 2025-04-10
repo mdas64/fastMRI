@@ -104,7 +104,7 @@ class FastMriDataModule(pl.LightningDataModule):
         test_filter: Optional[Callable] = None,
         use_dataset_cache_file: bool = True,
         batch_size: int = 1,
-        num_workers: int = 4,
+        num_workers: int = 24,
         distributed_sampler: bool = False,
     ):
         """

@@ -44,7 +44,7 @@ def cli_main(args):
         sample_rate=args.sample_rate,
         batch_size=args.batch_size,
         # num_workers=args.num_workers,
-        num_workers=0,
+        num_workers=64,
         distributed_sampler=(args.accelerator in ("ddp", "ddp_cpu")),
     )
 
@@ -83,14 +83,20 @@ def build_args():
     parser = ArgumentParser()
 
     # basic args
-    path_config = pathlib.Path("../../fastmri_dirs.yaml")
+    # path_config = pathlib.Path("../../fastmri_dirs.yaml")
     num_gpus = 2
     backend = "ddp"
     batch_size = 1 if backend == "ddp" else num_gpus
 
     # set defaults based on optional directory config
-    data_path = fetch_dir("knee_path", path_config)
-    default_root_dir = fetch_dir("log_path", path_config) / "unet" / "unet_demo"
+    # data_path = fetch_dir("knee_path", path_config)
+    # data_path = "/home/hice1/romeara6/scratch/fastMRI/singlecoil_train"
+
+    # default_root_dir = fetch_dir("log_path", path_config) / "unet" / "unet_demo"
+
+    data_path = pathlib.Path("/home/hice1/romeara6/scratch/fastMRI")
+    default_root_dir = pathlib.Path("/home/hice1/romeara6/scratch/fastMRI/logs/unet/unet_demo")
+
 
     # client arguments
     parser.add_argument(
@@ -171,7 +177,7 @@ def build_args():
         accelerator=accelerator,  # automatically set accelerator
         devices=num_gpus if num_gpus > 0 else 1,  # use correct number of devices
         replace_sampler_ddp=False,  # necessary for volume dispatch during val
-        strategy=backend if num_gpus > 1 else "auto",
+        strategy= "ddp" if num_gpus > 1 else "auto",
         seed=42,
         deterministic=True,
         default_root_dir=default_root_dir,

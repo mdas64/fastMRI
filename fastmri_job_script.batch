@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#SBATCH --job-name=fastmri
+#SBATCH -N4 --ntasks-per-node=8
+#SBATCH --mem-per-cpu=6G
+#SBATCH -t12:00:00
+#SBATCH --output=fastmri_job
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=romeara6@gatech.edu
+
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate fastmri_env
+
+# python3 fastmri_examples/unet/run_pretrained_unet_inference.py --challenge unet_knee_sc --data_path /home/hice1/romeara6/scratch/fastMRI/singlecoil_test --output_path /home/hice1/romeara6/scratch/fastMRI/blurred.75 --device cpu
+python3 fastmri_examples/unet/train_unet_demo.py --challenge singlecoil --data_path /home/hice1/romeara6/scratch/fastMRI/data_small --mask_type random

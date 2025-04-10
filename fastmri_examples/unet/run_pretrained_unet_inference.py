@@ -19,6 +19,7 @@ import fastmri
 import fastmri.data.transforms as T
 from fastmri.data import SliceDataset
 from fastmri.models import Unet
+from scipy.ndimage import gaussian_filter
 
 UNET_FOLDER = "https://dl.fbaipublicfiles.com/fastMRI/trained_models/unet/"
 MODEL_FNAMES = {
@@ -51,7 +52,10 @@ def download_model(url, fname):
 def run_unet_model(batch, model, device):
     image, _, mean, std, fname, slice_num, _ = batch
 
-    output = model(image.to(device).unsqueeze(1)).squeeze(1).cpu()
+    #OPTIONAL: FOR TESTING GAUSSIAN BLUR 
+    blurred_image = gaussian_filter(image, sigma=0.75)
+    blurred_image = torch.tensor(blurred_image)
+    output = model(blurred_image.to(device).unsqueeze(1)).squeeze(1).cpu()
 
     mean = mean.unsqueeze(1).unsqueeze(2)
     std = std.unsqueeze(1).unsqueeze(2)
@@ -70,7 +74,7 @@ def run_inference(challenge, state_dict_file, data_path, output_path, device):
 
         state_dict_file = MODEL_FNAMES[challenge]
 
-    model.load_state_dict(torch.load(state_dict_file))
+    model.load_state_dict(torch.load(state_dict_file, map_location=torch.device('cpu')))
     model = model.eval()
 
     # data loader setup
@@ -156,7 +160,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
+    
     run_inference(
         args.challenge,
         args.state_dict_file,
