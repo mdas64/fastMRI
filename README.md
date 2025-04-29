@@ -1,5 +1,9 @@
 # fastMRI
 
+## Setup Instructions
+
+Setup instructions are included in the setup.md file.
+
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookresearch/fastMRI/blob/master/LICENSE.md)
 [![Build and Test](https://github.com/facebookresearch/fastMRI/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/facebookresearch/fastMRI/actions/workflows/build-and-test.yml)
 
